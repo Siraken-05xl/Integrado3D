@@ -8,12 +8,13 @@ public class MinijuegoHojasFinal : MonoBehaviour
     [Header("Referencias UI")]
     public RectTransform insecto;
     public TextMeshProUGUI timerTxt;
-    public GameObject contenidoJuego; // Arrastra aquí el objeto que agrupa el fondo, las hojas y el bicho
+    public TextMeshProUGUI contadorGolpesTxt; // Arrastra aquí tu nuevo texto de golpes
+    public GameObject contenidoJuego;
 
     [Header("Panel de Feedback")]
     public GameObject panelResultado;
     public TextMeshProUGUI textoResultado;
-    public Button botonContinuar; // Arrastra el botón de continuar aquí
+    public Button botonContinuar;
 
     [Header("Posiciones (Donde asoma)")]
     public Vector2[] posHojas;
@@ -38,9 +39,13 @@ public class MinijuegoHojasFinal : MonoBehaviour
         tSalto = vOculto;
 
         if (panelResultado) panelResultado.SetActive(false);
-        if (contenidoJuego) contenidoJuego.SetActive(true); // Se muestra el juego al empezar
+        if (contenidoJuego) contenidoJuego.SetActive(true);
         if (timerTxt) timerTxt.gameObject.SetActive(true);
         if (insecto) insecto.gameObject.SetActive(false);
+
+        // Inicializamos el texto del contador
+        ActualizarTextoContador();
+        if (contadorGolpesTxt) contadorGolpesTxt.gameObject.SetActive(true);
     }
 
     void Update()
@@ -85,17 +90,25 @@ public class MinijuegoHojasFinal : MonoBehaviour
         tSalto = vOculto;
     }
 
-    // Se vincula al componente Button del propio Insecto
     public void AlGolpearInsecto()
     {
         if (!estaAsomando || juegoTerminado) return;
 
         hits++;
         Ocultar();
+        ActualizarTextoContador(); // Actualiza el texto en pantalla al golpear
 
         if (hits >= metaGolpes)
         {
             FinalizarInmediato(true);
+        }
+    }
+
+    void ActualizarTextoContador()
+    {
+        if (contadorGolpesTxt)
+        {
+            contadorGolpesTxt.text = "Golpes: " + hits + " / " + metaGolpes;
         }
     }
 
@@ -104,18 +117,16 @@ public class MinijuegoHojasFinal : MonoBehaviour
         juegoTerminado = true;
         Ocultar();
 
-        // 1. Apagamos los elementos visuales del juego por detrás
         if (contenidoJuego) contenidoJuego.SetActive(false);
         if (timerTxt) timerTxt.gameObject.SetActive(false);
+        if (contadorGolpesTxt) contadorGolpesTxt.gameObject.SetActive(false); // Ocultamos el contador al terminar
 
-        // 2. Mostramos el panel de resultado impecable
         if (panelResultado && textoResultado)
         {
             textoResultado.text = victoria ? "¡Insecto capturado!" : "Ouw.. ¡Parece que se te ha escapado!";
             panelResultado.SetActive(true);
         }
 
-        // 3. Vinculamos el botón de continuar
         if (botonContinuar)
         {
             botonContinuar.onClick.RemoveAllListeners();
@@ -125,6 +136,6 @@ public class MinijuegoHojasFinal : MonoBehaviour
 
     public void CerrarMinijuego()
     {
-        this.gameObject.SetActive(false); // Apaga el minijuego completo
+        this.gameObject.SetActive(false);
     }
 }

@@ -6,45 +6,75 @@ using UnityEngine.UI;
 public class MinijuegoCruzFinal : MonoBehaviour
 {
     [Header("Referencias UI")]
-    public RectTransform jugador, bicho;
+    public RectTransform jugador;
+    public RectTransform bicho;
     public TextMeshProUGUI timerTxt;
-    public GameObject contenidoJuego; // Arrastra aquí el objeto que agrupa el fondo, bicho y cruz
+    public Slider barraProgreso;
+    public GameObject contenidoJuego;
 
     [Header("Panel de Feedback")]
     public GameObject panelResultado;
     public TextMeshProUGUI textoResultado;
-    public Button botonContinuar; // Arrastra aquí el botón de continuar
+    public Button botonContinuar;
 
-    [Header("Configuración")]
-    public float limX = 280f;
-    public float limY = 400f;
-    public float anchoB = 50f;
-    public float tLimite = 20f;
+    [Header("Ajustes de Movimiento")]
+    public float limX = 200f;
+    public float limY = 200f;
+    public float anchoB = 80f;
+    public float velocidadBicho = 300f;
+
+    [Header("Tiempos de Juego")]
+    public float tLimite = 15f;
     public float tNecesario = 3f;
-    public float vJug = 600f;
-    public float vBic = 350f;
 
-    private float cGlobal, cAcumulado, tB;
-    private Vector2 dirB;
-    private bool juegoTerminado = false;
+    private float cGlobal, cAcumulado;
+    private bool juegoTerminado;
+    private ControlesPlayer inputs;
+
+    // Variables de control para el bicho
+    private Vector2 destinoBicho;
+    private float tCambioDestino;
+
+    void Awake()
+    {
+        inputs = new ControlesPlayer();
+    }
 
     void OnEnable()
     {
+        inputs.Enable();
         cGlobal = tLimite;
-        cAcumulado = 0;
+        cAcumulado = 0f;
         juegoTerminado = false;
+        tCambioDestino = 0f;
 
         if (panelResultado) panelResultado.SetActive(false);
-        if (contenidoJuego) contenidoJuego.SetActive(true); // El juego debe verse al empezar
+        if (contenidoJuego) contenidoJuego.SetActive(true);
+        if (timerTxt) timerTxt.gameObject.SetActive(true);
 
-        jugador.anchoredPosition = bicho.anchoredPosition = Vector2.zero;
-        GetDir();
+        if (barraProgreso)
+        {
+            barraProgreso.gameObject.SetActive(true);
+            barraProgreso.maxValue = tNecesario;
+            barraProgreso.value = 0f;
+        }
+
+        if (jugador) jugador.anchoredPosition = Vector2.zero;
+        if (bicho) bicho.anchoredPosition = Vector2.zero;
+
+        destinoBicho = Vector2.zero;
+    }
+
+    void OnDisable()
+    {
+        inputs.Disable();
     }
 
     void Update()
     {
         if (juegoTerminado) return;
 
+        // 1. Temporizador general
         cGlobal -= Time.unscaledDeltaTime;
         if (timerTxt)
         {
@@ -53,60 +83,117 @@ public class MinijuegoCruzFinal : MonoBehaviour
             timerTxt.text = string.Format("{0:00}:{1:00}", m, s);
         }
 
-        if (cGlobal <= 0) FinalizarInmediato(false);
+        if (cGlobal <= 0)
+        {
+            FinalizarInmediato(false);
+            return;
+        }
 
-        Move(jugador, new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized, vJug);
-        MoveBicho();
+        // 2. Movimiento del Jugador (restringido a la cruz)
+        Vector2 inputMov = inputs.Player.Move.ReadValue<Vector2>();
+        MoverJugador(inputMov);
 
-        if (Vector2.Distance(jugador.anchoredPosition, bicho.anchoredPosition) < 80f)
+        // 3. MOVIMIENTO RESTRINGIDO DEL BICHO (¡Sin diagonales!)
+        tCambioDestino -= Time.unscaledDeltaTime;
+        if (tCambioDestino <= 0f)
+        {
+            ElegirNuevoDestinoEnCruz();
+            tCambioDestino = Random.Range(1.0f, 2.5f);
+        }
+
+        if (bicho)
+        {
+            // Movemos al bicho hacia el destino
+            Vector2 nuevaPos = Vector2.MoveTowards(bicho.anchoredPosition, destinoBicho, velocidadBicho * Time.unscaledDeltaTime);
+
+            // ¡AQUÍ ESTÁ EL TRUCO!: Forzamos que se mantenga en los carriles estrictos de la cruz
+            if (Mathf.Abs(nuevaPos.x) > Mathf.Abs(nuevaPos.y))
+            {
+                nuevaPos.y = 0; // Si domina el movimiento horizontal, su Y es 0 absoluto
+            }
+            else
+            {
+                nuevaPos.x = 0; // Si domina el movimiento vertical, su X es 0 absoluto
+            }
+
+            bicho.anchoredPosition = nuevaPos;
+        }
+
+        // 4. Comprobación de cercanía y barra
+        if (bicho && jugador && Vector2.Distance(jugador.anchoredPosition, bicho.anchoredPosition) <= anchoB)
         {
             cAcumulado += Time.unscaledDeltaTime;
-            if (cAcumulado >= tNecesario) FinalizarInmediato(true);
+            if (barraProgreso) barraProgreso.value = cAcumulado;
+
+            if (cAcumulado >= tNecesario)
+            {
+                FinalizarInmediato(true);
+            }
         }
     }
 
-    // --- LÓGICA DE MOVIMIENTO (Igual que antes) ---
-    void Move(RectTransform t, Vector2 d, float v)
+    void MoverJugador(Vector2 dir)
     {
-        Vector2 p = t.anchoredPosition + d * v * Time.unscaledDeltaTime;
-        if (Mathf.Abs(p.y) > anchoB) { p.x = 0; p.y = Mathf.Clamp(p.y, -limY, limY); }
-        else if (Mathf.Abs(p.x) > anchoB) { p.y = 0; p.x = Mathf.Clamp(p.x, -limX, limX); }
-        else { p.x = Mathf.Clamp(p.x, -anchoB, anchoB); p.y = Mathf.Clamp(p.y, -anchoB, anchoB); }
-        t.anchoredPosition = p;
-    }
+        if (jugador == null) return;
+        Vector2 pos = jugador.anchoredPosition;
 
-    void MoveBicho()
-    {
-        tB -= Time.unscaledDeltaTime;
-        Vector2 pre = bicho.anchoredPosition;
-        Move(bicho, dirB, vBic);
-        if (tB <= 0 || Vector2.Distance(pre, bicho.anchoredPosition) < 0.1f)
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
         {
-            dirB = bicho.anchoredPosition.magnitude > anchoB ? -bicho.anchoredPosition.normalized : GetDir();
-            tB = Random.Range(0.5f, 1.2f);
+            pos.x += dir.x * 400f * Time.unscaledDeltaTime;
+            pos.y = 0;
         }
+        else if (Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+        {
+            pos.y += dir.y * 400f * Time.unscaledDeltaTime;
+            pos.x = 0;
+        }
+
+        pos.x = Mathf.Clamp(pos.x, -limX, limX);
+        pos.y = Mathf.Clamp(pos.y, -limY, limY);
+        jugador.anchoredPosition = pos;
     }
 
-    Vector2 GetDir() => dirB = (new Vector2[] { Vector2.up, Vector2.down, Vector2.left, Vector2.right })[Random.Range(0, 4)];
+    void ElegirNuevoDestinoEnCruz()
+    {
+        if (bicho == null) return;
 
-    // --- NUEVA LÓGICA DE FINALIZACIÓN ---
+        // Si el bicho está actualmente en el centro (o muy cerca), puede elegir cualquier carril
+        if (Mathf.Abs(bicho.anchoredPosition.x) < 5f && Mathf.Abs(bicho.anchoredPosition.y) < 5f)
+        {
+            if (Random.value > 0.5f)
+            {
+                destinoBicho = new Vector2(Random.Range(-limX, limX), 0f);
+            }
+            else
+            {
+                destinoBicho = new Vector2(0f, Random.Range(-limY, limY));
+            }
+        }
+        // Si está en el carril horizontal (eje X), obligatoriamente su destino pasa por volver al centro (0,0) antes de cambiar
+        else if (Mathf.Abs(bicho.anchoredPosition.x) > Mathf.Abs(bicho.anchoredPosition.y))
+        {
+            destinoBicho = new Vector2(Random.Range(-limX, limX), 0f); // Sigue en su carril o pasa por el centro
+        }
+        // Si está en el carril vertical (eje Y), su destino se mantiene en el carril vertical
+        else
+        {
+            destinoBicho = new Vector2(0f, Random.Range(-limY, limY)); // Sigue en su carril o pasa por el centro
+        }
+    }
 
     void FinalizarInmediato(bool victoria)
     {
         juegoTerminado = true;
-
-        // 1. Apagamos el contenido del minijuego para que solo quede el panel
         if (contenidoJuego) contenidoJuego.SetActive(false);
         if (timerTxt) timerTxt.gameObject.SetActive(false);
+        if (barraProgreso) barraProgreso.gameObject.SetActive(false);
 
-        // 2. Mostramos el panel de resultado
         if (panelResultado && textoResultado)
         {
-            textoResultado.text = victoria ? "¡Insecto capturado!" : "Ouw.. ¡Parece que se te ha escapado!";
+            textoResultado.text = victoria ? "¡Insecto atrapado con éxito!" : "El tiempo se ha agotado...";
             panelResultado.SetActive(true);
         }
 
-        // 3. Preparamos el botón de continuar
         if (botonContinuar)
         {
             botonContinuar.onClick.RemoveAllListeners();
@@ -116,7 +203,6 @@ public class MinijuegoCruzFinal : MonoBehaviour
 
     public void CerrarMinijuego()
     {
-        // Apaga el panel del minijuego completo
         this.gameObject.SetActive(false);
     }
 }
