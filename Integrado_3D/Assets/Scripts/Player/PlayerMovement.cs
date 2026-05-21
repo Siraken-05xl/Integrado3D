@@ -4,17 +4,18 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
-    public float velocidad = 5f;
+    public float velocidadCaminar = 5f;
+    public float velocidadCorrer = 8f;
     public float velocidadRotacion = 15f;
 
     [Header("Referencias de Animación")]
-    private Animator animator; // Variable interna para el componente Animator
+    private Animator animator;
 
     private Vector2 inputMovimiento;
+    private bool estaCorriendo;
 
     void Start()
     {
-        // CAMBIO CLAVE: Buscamos el Animator en los hijos (donde está el modelo de Blender)
         animator = GetComponentInChildren<Animator>();
 
         if (animator == null)
@@ -30,12 +31,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        // Detectar si se pulsa Shift para correr
+        estaCorriendo = Keyboard.current.leftShiftKey.isPressed;
+
         float x = inputMovimiento.x;
         float z = inputMovimiento.y;
 
         Vector3 direccionInput = new Vector3(x, 0, z).normalized;
 
-        // Comprobamos si nos estamos moviendo
         if (direccionInput.magnitude >= 0.1f)
         {
             float anguloObjetivo = Mathf.Atan2(direccionInput.x, direccionInput.z) * Mathf.Rad2Deg + Camera.main.transform.eulerAngles.y;
@@ -44,24 +47,29 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, rotacionObjetivo, velocidadRotacion * Time.deltaTime);
 
             Vector3 direccionMovimiento = Quaternion.Euler(0f, anguloObjetivo, 0f) * Vector3.forward;
-            controller.Move(direccionMovimiento.normalized * velocidad * Time.deltaTime);
 
-            // ¡ANIMACIÓN!: Activamos el booleano del Animator en el hijo
+            // Elegimos la velocidad según si corre o camina
+            float velocidadActual = estaCorriendo ? velocidadCorrer : velocidadCaminar;
+            controller.Move(direccionMovimiento.normalized * velocidadActual * Time.deltaTime);
+
+            // Gestión de Animaciones
             if (animator != null)
             {
-                animator.SetBool("IsWalking", true);
+                animator.SetBool("IsWalking", !estaCorriendo);
+                animator.SetBool("IsRunning", estaCorriendo);
             }
         }
         else
         {
-            // ¡ANIMACIÓN!: Desactivamos el booleano al detenernos
+            // Parado
             if (animator != null)
             {
                 animator.SetBool("IsWalking", false);
+                animator.SetBool("IsRunning", false);
             }
         }
 
-        // Aplicar gravedad si no está tocando el suelo
+        // Gravedad
         if (!controller.isGrounded)
         {
             controller.Move(Vector3.down * 9.81f * Time.deltaTime);
