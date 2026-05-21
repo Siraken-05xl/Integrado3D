@@ -3552,6 +3552,16 @@ PrefabInstance:
       propertyPath: velocidad
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 6927244277123003380, guid: 825f6d3486fdf8c48b2595fcd05db761,
+        type: 3}
+      propertyPath: velocidadCorrer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6927244277123003380, guid: 825f6d3486fdf8c48b2595fcd05db761,
+        type: 3}
+      propertyPath: velocidadCaminar
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8197300100559385951, guid: 825f6d3486fdf8c48b2595fcd05db761,
         type: 3}
       propertyPath: m_Name
