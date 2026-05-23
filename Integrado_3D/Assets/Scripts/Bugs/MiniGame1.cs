@@ -79,6 +79,10 @@ public class Minigame1 : MonoBehaviour
         if (grupoJuego != null) grupoJuego.SetActive(false);
 
         Time.timeScale = 0f;
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
         panelResultado.SetActive(true);
         textoResultado.text = victoria ? "¡Insecto capturado!" : "Se te ha escapado el insecto";
     }

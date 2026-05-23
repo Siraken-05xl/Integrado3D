@@ -5,10 +5,11 @@ public class GestorRetorno : MonoBehaviour
 {
     public string nombreEscenaCasa = "Casa";
 
-    public void VolverALaCasa() 
+    public void VolverALaCasa()
     {
-        // ¡ESTO ES LO QUE TE FALTA!
         Time.timeScale = 1f;
+
+        Cursor.visible = false;
 
         SceneManager.LoadScene(nombreEscenaCasa);
     }
