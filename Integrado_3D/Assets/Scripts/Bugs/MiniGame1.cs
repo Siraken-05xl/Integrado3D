@@ -31,7 +31,6 @@ public class MinijuegoCruzFinal : MonoBehaviour
     private bool juegoTerminado;
     private ControlesPlayer inputs;
 
-    // Variables de control para el bicho
     private Vector2 destinoBicho;
     private float tCambioDestino;
 
@@ -74,7 +73,6 @@ public class MinijuegoCruzFinal : MonoBehaviour
     {
         if (juegoTerminado) return;
 
-        // 1. Temporizador general
         cGlobal -= Time.unscaledDeltaTime;
         if (timerTxt)
         {
@@ -89,11 +87,9 @@ public class MinijuegoCruzFinal : MonoBehaviour
             return;
         }
 
-        // 2. Movimiento del Jugador (restringido a la cruz)
         Vector2 inputMov = inputs.Player.Move.ReadValue<Vector2>();
         MoverJugador(inputMov);
 
-        // 3. MOVIMIENTO RESTRINGIDO DEL BICHO (¡Sin diagonales!)
         tCambioDestino -= Time.unscaledDeltaTime;
         if (tCambioDestino <= 0f)
         {
@@ -103,23 +99,20 @@ public class MinijuegoCruzFinal : MonoBehaviour
 
         if (bicho)
         {
-            // Movemos al bicho hacia el destino
             Vector2 nuevaPos = Vector2.MoveTowards(bicho.anchoredPosition, destinoBicho, velocidadBicho * Time.unscaledDeltaTime);
 
-            // ¡AQUÍ ESTÁ EL TRUCO!: Forzamos que se mantenga en los carriles estrictos de la cruz
             if (Mathf.Abs(nuevaPos.x) > Mathf.Abs(nuevaPos.y))
             {
-                nuevaPos.y = 0; // Si domina el movimiento horizontal, su Y es 0 absoluto
+                nuevaPos.y = 0;
             }
             else
             {
-                nuevaPos.x = 0; // Si domina el movimiento vertical, su X es 0 absoluto
+                nuevaPos.x = 0;
             }
 
             bicho.anchoredPosition = nuevaPos;
         }
 
-        // 4. Comprobación de cercanía y barra
         if (bicho && jugador && Vector2.Distance(jugador.anchoredPosition, bicho.anchoredPosition) <= anchoB)
         {
             cAcumulado += Time.unscaledDeltaTime;
@@ -157,7 +150,6 @@ public class MinijuegoCruzFinal : MonoBehaviour
     {
         if (bicho == null) return;
 
-        // Si el bicho está actualmente en el centro (o muy cerca), puede elegir cualquier carril
         if (Mathf.Abs(bicho.anchoredPosition.x) < 5f && Mathf.Abs(bicho.anchoredPosition.y) < 5f)
         {
             if (Random.value > 0.5f)
@@ -169,15 +161,15 @@ public class MinijuegoCruzFinal : MonoBehaviour
                 destinoBicho = new Vector2(0f, Random.Range(-limY, limY));
             }
         }
-        // Si está en el carril horizontal (eje X), obligatoriamente su destino pasa por volver al centro (0,0) antes de cambiar
+
         else if (Mathf.Abs(bicho.anchoredPosition.x) > Mathf.Abs(bicho.anchoredPosition.y))
         {
-            destinoBicho = new Vector2(Random.Range(-limX, limX), 0f); // Sigue en su carril o pasa por el centro
+            destinoBicho = new Vector2(Random.Range(-limX, limX), 0f);
         }
-        // Si está en el carril vertical (eje Y), su destino se mantiene en el carril vertical
+
         else
         {
-            destinoBicho = new Vector2(0f, Random.Range(-limY, limY)); // Sigue en su carril o pasa por el centro
+            destinoBicho = new Vector2(0f, Random.Range(-limY, limY));
         }
     }
 

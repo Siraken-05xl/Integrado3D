@@ -1,9 +1,12 @@
 using UnityEngine;
 
-public class Inmortal : MonoBehaviour
+public class PersistenciaGestor : MonoBehaviour
 {
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("Gestor");
+        if (objs.Length > 1) { Destroy(this.gameObject); }
+
+        DontDestroyOnLoad(this.gameObject);
     }
 }
