@@ -1,20 +1,22 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InteraccionMaceta : MonoBehaviour
 {
-    public GameObject minijuego;
-    public GestorObjetivos gestor;
+    public string nombreEscenaMinijuego = "MinijuegoCruz";
 
-    bool tieneFlor = false;
+    public static bool tieneFlor = false;
 
-    public void OnInteractuar()
+    void OnMouseDown()
     {
-        if (tieneFlor) { /* abrir juego */ }
-        else { /* mostrar mensaje: "Necesito una flor" */ }
-
-        minijuego.SetActive(true);
-        Time.timeScale = 0f;
-
-        gestor.SiguienteFase();
+        if (tieneFlor)
+        {
+            Debug.Log("Flor detectada. Cargando minijuego...");
+            SceneManager.LoadScene(nombreEscenaMinijuego);
+        }
+        else
+        {
+            Debug.Log("Necesitas una flor para interactuar.");
+        }
     }
 }

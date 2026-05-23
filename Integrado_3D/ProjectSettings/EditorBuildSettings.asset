@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SCN_Level.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/SCN_MinijuegoCruz.unity
+    guid: cee3fcaab53625b4488373af269129a1
   m_configObjects: {}

@@ -10,6 +10,7 @@ public class RecogerFlor : MonoBehaviour
         {
             GameObject.Find("GestorJuego").GetComponent<GestorObjetivos>().SiguienteFase("Flor de campo");
             Destroy(gameObject);
+            InteraccionMaceta.tieneFlor = true; 
         }
     }
 
