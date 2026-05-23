@@ -38,6 +38,12 @@ public class InteraccionLibro : MonoBehaviour
 
     void AbrirLibro()
     {
+        if (libroUI == null)
+        {
+            Debug.LogError("¡ERROR! El objeto 'LibroCompleto' no está arrastrado en el Inspector del script. Por favor, arrástralo.");
+            return;
+        }
+
         libroUI.SetActive(true);
         Time.timeScale = 0f;
 

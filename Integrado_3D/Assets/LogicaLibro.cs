@@ -1,14 +1,14 @@
 using UnityEngine;
 
-public class LogicaLibro : MonoBehaviour
+public class CerrarLibro : MonoBehaviour
 {
-    public GameObject panelLibro;
+    public GameObject libroCompleto;
 
-    public void BotonCerrar()
+    public void Cerrar()
     {
-        panelLibro.SetActive(false);
-        Time.timeScale = 1f;
+        libroCompleto.SetActive(false);
 
+        Time.timeScale = 1f;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
