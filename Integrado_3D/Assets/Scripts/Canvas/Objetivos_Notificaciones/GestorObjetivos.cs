@@ -17,7 +17,12 @@ public class GestorObjetivos : MonoBehaviour
     {
         faseActual++;
         ActualizarObjetivo();
-        if (mensajeNotificacion != "") StartCoroutine(MostrarNotificacionTemporal(mensajeNotificacion));
+
+        // Solo mostramos la notificacion si realmente pasamos un texto
+        if (mensajeNotificacion != "")
+        {
+            StartCoroutine(MostrarNotificacionTemporal(mensajeNotificacion));
+        }
     }
 
     IEnumerator MostrarNotificacionTemporal(string msg)
