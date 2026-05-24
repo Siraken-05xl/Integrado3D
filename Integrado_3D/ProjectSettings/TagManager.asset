@@ -5,11 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Gestor
+  - Arbol
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Objectes
   - Water
   - UI
   - 
