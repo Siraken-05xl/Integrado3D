@@ -10,6 +10,5 @@ public class CerrarLibro : MonoBehaviour
 
         Time.timeScale = 1f;
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
     }
 }

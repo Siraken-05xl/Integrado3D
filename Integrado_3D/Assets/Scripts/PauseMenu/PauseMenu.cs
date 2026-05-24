@@ -29,7 +29,6 @@ public class PauseMenu : MonoBehaviour
         GameIsPaused = false;
 
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void Pause()

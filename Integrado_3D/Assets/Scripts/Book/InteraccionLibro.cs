@@ -28,7 +28,6 @@ public class InteraccionLibro : MonoBehaviour
         libroUI.SetActive(true);
         Time.timeScale = 0f;
         Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
 
         FindObjectOfType<GestorObjetivos>().SiguienteFase();
     }
