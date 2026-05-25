@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SCN_MinijuegoTopo.unity
     guid: fde5eff704128c446aa044f303c11ef7
+  - enabled: 1
+    path: Assets/Scenes/SCN_Final.unity
+    guid: 38ca9af6906b2f544847a041ee234344
   m_configObjects: {}

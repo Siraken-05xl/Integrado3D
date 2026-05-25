@@ -134,6 +134,7 @@ public class MinigameHojasFinal : MonoBehaviour
             {
                 imagenVictoria.SetActive(true);
                 textoDerrota.SetActive(false);
+                ProgresoJuego.instance.MarcarComoCompletado(1);
             }
             else
             {

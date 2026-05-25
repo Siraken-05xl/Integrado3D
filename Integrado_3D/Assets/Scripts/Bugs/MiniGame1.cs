@@ -101,6 +101,7 @@ public class Minigame1 : MonoBehaviour
             imagenVictoria.SetActive(true);
             textoDerrota.SetActive(false);
             textoResultado.text = "¡Insecto capturado!";
+            ProgresoJuego.instance.MarcarComoCompletado(2);
         }
         else
         {

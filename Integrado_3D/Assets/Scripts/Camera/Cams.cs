@@ -7,17 +7,16 @@ public class Cams : MonoBehaviour
 
     private void Start()
     {
-        // En lugar de apagarla, le damos prioridad 0 para que no sea la activa
         cam1.Priority = 0;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) cam1.Priority = 100; // Prioridad alta = Se activa
+        if (other.CompareTag("Player")) cam1.Priority = 100;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player")) cam1.Priority = 0; // Prioridad baja = Se apaga
+        if (other.CompareTag("Player")) cam1.Priority = 0;
     }
 }
