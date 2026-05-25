@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 inputMovimiento;
     private bool estaCorriendo;
+    private bool estaCazando = false;
 
     void Start()
     {
@@ -31,7 +32,13 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Detectar si se pulsa Shift para correr
+        if (Input.GetMouseButtonDown(0) && !estaCazando)
+        {
+            StartCoroutine(EjecutarCaza());
+        }
+
+        if (estaCazando) return;
+
         estaCorriendo = Keyboard.current.leftShiftKey.isPressed;
 
         float x = inputMovimiento.x;
@@ -48,11 +55,9 @@ public class PlayerMovement : MonoBehaviour
 
             Vector3 direccionMovimiento = Quaternion.Euler(0f, anguloObjetivo, 0f) * Vector3.forward;
 
-            // Elegimos la velocidad según si corre o camina
             float velocidadActual = estaCorriendo ? velocidadCorrer : velocidadCaminar;
             controller.Move(direccionMovimiento.normalized * velocidadActual * Time.deltaTime);
 
-            // Gestión de Animaciones
             if (animator != null)
             {
                 animator.SetBool("IsWalking", !estaCorriendo);
@@ -61,7 +66,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            // Parado
             if (animator != null)
             {
                 animator.SetBool("IsWalking", false);
@@ -69,10 +73,18 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        // Gravedad
         if (!controller.isGrounded)
         {
             controller.Move(Vector3.down * 9.81f * Time.deltaTime);
         }
+    }
+    private System.Collections.IEnumerator EjecutarCaza()
+    {
+        estaCazando = true;
+        animator.SetTrigger("UsarCaza");
+
+        yield return new WaitForSeconds(0.8f);
+
+        estaCazando = false;
     }
 }

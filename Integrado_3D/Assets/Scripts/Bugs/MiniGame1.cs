@@ -5,7 +5,7 @@ using TMPro;
 public class Minigame1 : MonoBehaviour
 {
     [Header("Objetos a ocultar")]
-    public GameObject grupoJuego; // Arrastra aquí un objeto padre que contenga al jugador, insecto y cruz
+    public GameObject grupoJuego;
 
     [Header("Referencias UI")]
     public RectTransform insecto;
@@ -23,6 +23,10 @@ public class Minigame1 : MonoBehaviour
     private Transform jugadorTransform;
     private bool juegoTerminado = false;
 
+    [Header("Resultado UI")]
+    public GameObject imagenVictoria;
+    public GameObject textoDerrota;
+
     void Start()
     {
         tiempoRestante = tiempoTotal;
@@ -34,6 +38,8 @@ public class Minigame1 : MonoBehaviour
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) jugadorTransform = playerObj.transform;
+
+        ScreenFader.instance.CerrarCirculo();
     }
 
     void Update()
@@ -70,6 +76,11 @@ public class Minigame1 : MonoBehaviour
             }
         }
     }
+    public void BotonContinuar()
+    {
+        Time.timeScale = 1f;
+        ScreenFader.instance.AbrirCirculo(this.gameObject);
+    }
 
     void TerminarJuego(bool victoria)
     {
@@ -84,6 +95,18 @@ public class Minigame1 : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
 
         panelResultado.SetActive(true);
-        textoResultado.text = victoria ? "¡Insecto capturado!" : "Se te ha escapado el insecto";
+
+        if (victoria)
+        {
+            imagenVictoria.SetActive(true);
+            textoDerrota.SetActive(false);
+            textoResultado.text = "¡Insecto capturado!";
+        }
+        else
+        {
+            imagenVictoria.SetActive(false);
+            textoDerrota.SetActive(true);
+            textoResultado.text = "Ouw, parece que se te ha escapado el insecto...";
+        }
     }
 }

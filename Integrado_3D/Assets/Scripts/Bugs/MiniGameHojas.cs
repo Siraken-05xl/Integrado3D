@@ -3,18 +3,22 @@ using TMPro;
 using System.Collections;
 using UnityEngine.UI;
 
-public class MinijuegoHojasFinal : MonoBehaviour
+public class MinigameHojasFinal : MonoBehaviour
 {
     [Header("Referencias UI")]
     public RectTransform insecto;
     public TextMeshProUGUI timerTxt;
-    public TextMeshProUGUI contadorGolpesTxt; // Arrastra aquí tu nuevo texto de golpes
+    public TextMeshProUGUI contadorGolpesTxt;
     public GameObject contenidoJuego;
 
     [Header("Panel de Feedback")]
     public GameObject panelResultado;
-    public TextMeshProUGUI textoResultado;
+    public TextMeshProUGUI textoResultado;  
     public Button botonContinuar;
+
+    [Header("Resultado UI")]
+    public GameObject imagenVictoria;
+    public GameObject textoDerrota;
 
     [Header("Posiciones (Donde asoma)")]
     public Vector2[] posHojas;
@@ -43,9 +47,10 @@ public class MinijuegoHojasFinal : MonoBehaviour
         if (timerTxt) timerTxt.gameObject.SetActive(true);
         if (insecto) insecto.gameObject.SetActive(false);
 
-        // Inicializamos el texto del contador
         ActualizarTextoContador();
         if (contadorGolpesTxt) contadorGolpesTxt.gameObject.SetActive(true);
+
+        ScreenFader.instance.CerrarCirculo();
     }
 
     void Update()
@@ -96,7 +101,7 @@ public class MinijuegoHojasFinal : MonoBehaviour
 
         hits++;
         Ocultar();
-        ActualizarTextoContador(); // Actualiza el texto en pantalla al golpear
+        ActualizarTextoContador();
 
         if (hits >= metaGolpes)
         {
@@ -108,7 +113,7 @@ public class MinijuegoHojasFinal : MonoBehaviour
     {
         if (contadorGolpesTxt)
         {
-            contadorGolpesTxt.text = "Golpes: " + hits + " / " + metaGolpes;
+            contadorGolpesTxt.text = "Hits: " + hits + " / " + metaGolpes;
         }
     }
 
@@ -119,12 +124,22 @@ public class MinijuegoHojasFinal : MonoBehaviour
 
         if (contenidoJuego) contenidoJuego.SetActive(false);
         if (timerTxt) timerTxt.gameObject.SetActive(false);
-        if (contadorGolpesTxt) contadorGolpesTxt.gameObject.SetActive(false); // Ocultamos el contador al terminar
+        if (contadorGolpesTxt) contadorGolpesTxt.gameObject.SetActive(false);
 
-        if (panelResultado && textoResultado)
+        if (panelResultado)
         {
-            textoResultado.text = victoria ? "¡Insecto capturado!" : "Ouw.. ¡Parece que se te ha escapado!";
             panelResultado.SetActive(true);
+
+            if (victoria)
+            {
+                imagenVictoria.SetActive(true);
+                textoDerrota.SetActive(false);
+            }
+            else
+            {
+                imagenVictoria.SetActive(false);
+                textoDerrota.SetActive(true);
+            }
         }
 
         if (botonContinuar)
@@ -136,6 +151,7 @@ public class MinijuegoHojasFinal : MonoBehaviour
 
     public void CerrarMinijuego()
     {
-        this.gameObject.SetActive(false);
+        Time.timeScale = 1f;
+        ScreenFader.instance.AbrirCirculo(this.gameObject);
     }
 }

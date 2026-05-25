@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/FloridaLogo.unity
+    guid: 94a4fb3e34017a74f89c38cd8c5cf640
+  - enabled: 1
     path: Assets/Scenes/SCN_MainMenu.unity
     guid: c3ad8a08a5a4bb74c87ed0929a859b37
   - enabled: 1
