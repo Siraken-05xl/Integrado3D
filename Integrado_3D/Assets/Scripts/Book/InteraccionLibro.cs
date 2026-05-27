@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement; // Necesario para cambiar de escena
 
 public class InteraccionLibro : MonoBehaviour
 {
@@ -25,10 +26,23 @@ public class InteraccionLibro : MonoBehaviour
 
     void AbrirLibro()
     {
-        libroUI.SetActive(true);
-        Time.timeScale = 0f;
-        Cursor.visible = true;
+        if (ProgresoJuego.instance != null &&
+            ProgresoJuego.instance.minijuego1Completado &&
+            ProgresoJuego.instance.minijuego2Completado)
+        {
+            Debug.Log("¡Ambos minijuegos completados! Saltando a la escena final...");
+            SceneManager.LoadScene("SCN_Final");
+        }
+        else
+        {
+            libroUI.SetActive(true);
+            Time.timeScale = 0f;
 
-        FindObjectOfType<GestorObjetivos>().SiguienteFase();
+            GestorObjetivos gestor = FindObjectOfType<GestorObjetivos>();
+            if (gestor != null)
+            {
+                gestor.SiguienteFase();
+            }
+        }
     }
 }

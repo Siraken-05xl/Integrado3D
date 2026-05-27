@@ -9,8 +9,6 @@ public class GestorRetorno : MonoBehaviour
     {
         Time.timeScale = 1f;
 
-        Cursor.visible = false;
-
         SceneManager.LoadScene(nombreEscenaCasa);
     }
 }

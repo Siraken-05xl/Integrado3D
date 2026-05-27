@@ -35,10 +35,10 @@ public class GestorObjetivos : MonoBehaviour
     {
         switch (faseActual)
         {
-            case 0: textoObjetivo.text = "[Nuevo Objetivo] Lee el libro"; break;
-            case 1: textoObjetivo.text = "[Nuevo Objetivo] Recoge una flor"; break;
-            case 2: textoObjetivo.text = "[Nuevo Objetivo] Ve a la maceta"; break;
-            case 3: textoObjetivo.text = "¡Interacciona con la maceta!"; break;
+            case 0: textoObjetivo.text = ""; break;
+            case 1: textoObjetivo.text = ""; break;
+            case 2: textoObjetivo.text = ""; break;
+            case 3: textoObjetivo.text = ""; break;
         }
     }
 }

@@ -7,7 +7,6 @@ public class DayNightCycle : MonoBehaviour
 
     void Update()
     {
-        // Rotamos la luz sobre el eje X para simular el paso del tiempo
         transform.Rotate(Vector3.right * velocidadRotacion * Time.deltaTime);
     }
 }

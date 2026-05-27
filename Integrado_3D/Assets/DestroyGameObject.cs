@@ -8,7 +8,7 @@ public class RecogerFlor : MonoBehaviour
     {
         if (estaCerca && Input.GetKeyDown(KeyCode.E))
         {
-            GameObject.Find("GestorJuego").GetComponent<GestorObjetivos>().SiguienteFase("Flor de campo");
+            GameObject.Find("GestorJuego").GetComponent<GestorObjetivos>().SiguienteFase("");
             Destroy(gameObject);
             InteraccionMaceta.tieneFlor = true; 
         }

@@ -9,6 +9,5 @@ public class CerrarLibro : MonoBehaviour
         libroCompleto.SetActive(false);
 
         Time.timeScale = 1f;
-        Cursor.visible = false;
     }
 }

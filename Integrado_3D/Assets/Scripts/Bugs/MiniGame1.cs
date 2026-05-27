@@ -91,9 +91,6 @@ public class Minigame1 : MonoBehaviour
 
         Time.timeScale = 0f;
 
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-
         panelResultado.SetActive(true);
 
         if (victoria)
