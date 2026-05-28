@@ -8,12 +8,25 @@ public class RecogerFlor : MonoBehaviour
     {
         if (estaCerca && Input.GetKeyDown(KeyCode.E))
         {
+            if (NotificadorObjetos.instance != null)
+            {
+                NotificadorObjetos.instance.MostrarIcono(0);
+            }
+
             GameObject.Find("GestorJuego").GetComponent<GestorObjetivos>().SiguienteFase("");
+            InteraccionMaceta.tieneFlor = true;
+
             Destroy(gameObject);
-            InteraccionMaceta.tieneFlor = true; 
         }
     }
 
-    private void OnTriggerEnter(Collider other) { if (other.CompareTag("Player")) estaCerca = true; }
-    private void OnTriggerExit(Collider other) { if (other.CompareTag("Player")) estaCerca = false; }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player")) estaCerca = true;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player")) estaCerca = false;
+    }
 }

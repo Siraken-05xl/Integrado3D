@@ -5127,6 +5127,11 @@ PrefabInstance:
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnInteractuar
       objectReference: {fileID: 0}
+    - target: {fileID: 5701330777190735008, guid: 825f6d3486fdf8c48b2595fcd05db761,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.15
+      objectReference: {fileID: 0}
     - target: {fileID: 6927244277123003380, guid: 825f6d3486fdf8c48b2595fcd05db761,
         type: 3}
       propertyPath: velocidad
@@ -5165,7 +5170,7 @@ PrefabInstance:
     - target: {fileID: 8829722333635538917, guid: 825f6d3486fdf8c48b2595fcd05db761,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.91
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8829722333635538917, guid: 825f6d3486fdf8c48b2595fcd05db761,
         type: 3}
@@ -5175,7 +5180,7 @@ PrefabInstance:
     - target: {fileID: 8829722333635538917, guid: 825f6d3486fdf8c48b2595fcd05db761,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.35
+      value: -6.55
       objectReference: {fileID: 0}
     - target: {fileID: 8829722333635538917, guid: 825f6d3486fdf8c48b2595fcd05db761,
         type: 3}
@@ -11378,6 +11383,7 @@ MonoBehaviour:
   tiempoParaGanar: 3
   imagenVictoria: {fileID: 0}
   textoDerrota: {fileID: 0}
+  idDelMinijuego: 0
 --- !u!114 &1143673814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17391,7 +17397,7 @@ GameObject:
   - component: {fileID: 1710568589}
   - component: {fileID: 1710568588}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: ControlsMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

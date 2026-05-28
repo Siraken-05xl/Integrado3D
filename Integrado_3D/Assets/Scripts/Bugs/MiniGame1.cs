@@ -27,6 +27,8 @@ public class Minigame1 : MonoBehaviour
     public GameObject imagenVictoria;
     public GameObject textoDerrota;
 
+    public int idDelMinijuego;
+
     void Start()
     {
         tiempoRestante = tiempoTotal;
@@ -99,6 +101,7 @@ public class Minigame1 : MonoBehaviour
             textoDerrota.SetActive(false);
             textoResultado.text = "¡Insecto capturado!";
             ProgresoJuego.instance.MarcarComoCompletado(2);
+            NotificadorObjetos.instance.MostrarIcono(1);
         }
         else
         {
